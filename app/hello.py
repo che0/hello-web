@@ -1,3 +1,4 @@
+import os
 import socket
 import jinja2
 import requests
@@ -6,6 +7,8 @@ from flask import Flask
 
 app = Flask(__name__)
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
+
+BACKEND_URL = os.getenv('BACKEND_URL')
 
 FALLBACK_CAT_URL = 'data:image/png,' \
     + 'iVBORw0KGgoAAAANSUhEUgAAAZAAAADIAQMAAAD82yWhAAAABlBMVEUAAAD/AAAb/40iAAAACXBI' \
@@ -22,9 +25,27 @@ FALLBACK_CAT_URL = 'data:image/png,' \
     + 'bPYN0BJOQGv6iO5FbiLfIIm+FYNKzE2SpRNHJsaTyRLJZKY/ZU0nf6f739iJiy/8Lw8Oh8PhcDgc' \
     + 'Duc/yS9O2VrJbYYKJgAAAABJRU5ErkJggg=='
 
+
+def get_backend_data():
+    response = requests.get(BACKEND_URL, timeout=1)
+    return response.json()
+
+
+@app.route('/alive')
+def liveness_check():
+    return 'OK\n'
+
+
+@app.route('/ready')
+def readiness_check():
+    get_backend_data()
+    return 'OK\n'
+
+
 @app.route("/")
 def hello():
-    return "Hello World, from {}".format(socket.gethostname())
+    return "Hello World, from {0}\nbackend: {1[number]} from {1[hostname]}\n".format(
+        socket.gethostname(), get_backend_data())
 
 
 @app.route("/cat")
