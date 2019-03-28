@@ -6,4 +6,8 @@ COPY . /app
 WORKDIR /app
 
 EXPOSE 9090
-CMD ["uwsgi", "--socket=:9090", "--processes=4", "--module=hello:app"]
+CMD ["uwsgi",
+        "--socket=:9090", "--processes=4",
+        "--uid=nobody", "--gid=nogroup",
+        "--need-app",
+        "--module=hello:app"]
