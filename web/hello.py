@@ -27,7 +27,7 @@ FALLBACK_CAT_URL = 'data:image/png,' \
 
 
 def get_backend_data():
-    response = requests.get(BACKEND_URL, timeout=1)
+    response = requests.get(BACKEND_URL + "/backend", timeout=1)
     return response.json()
 
 
@@ -46,6 +46,12 @@ def readiness_check():
 def hello():
     return "Hello World, from {0}\nbackend: {1[number]} from {1[hostname]}\n".format(
         socket.gethostname(), get_backend_data())
+
+
+@app.route("/reset-info")
+def reset_info():
+    info = requests.get(BACKEND_URL + "/reset-info", timeout=1).json()
+    return "Reset count {0[count]}, last on {0[last]}".format(info)
 
 
 @app.route("/cat")
