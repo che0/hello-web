@@ -33,11 +33,15 @@ def get_backend_data():
 
 @app.route('/alive')
 def liveness_check():
+    if os.path.isfile('/tmp/killed'):
+        raise RuntimeError('we got killed')
     return 'OK\n'
 
 
 @app.route('/ready')
 def readiness_check():
+    if os.path.isfile('/tmp/broken'):
+        raise RuntimeError('we are broken')
     get_backend_data()
     return 'OK\n'
 
