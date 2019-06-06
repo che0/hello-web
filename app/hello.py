@@ -33,8 +33,8 @@ def get_backend_data():
 
 @app.route('/alive')
 def liveness_check():
-    if os.path.isfile('/tmp/killed'):
-        raise RuntimeError('we got killed')
+    if os.path.isfile('/tmp/dead'):
+        raise RuntimeError('we are dead')
     return 'OK\n'
 
 
