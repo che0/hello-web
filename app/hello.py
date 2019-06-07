@@ -68,5 +68,12 @@ def cat():
     })
 
 
+@app.route('/env')
+def env():
+    return jinja_env.get_template('env.html').render({
+        'env': os.environ,
+    })
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80)
